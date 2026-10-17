@@ -1,3 +1,5 @@
+package objects;
+
 public class Admin extends Account {
     private String role;
 

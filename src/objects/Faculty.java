@@ -1,3 +1,5 @@
+package objects;
+
 public class Faculty extends Account{
     private String role;
 

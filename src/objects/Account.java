@@ -1,3 +1,5 @@
+package objects;
+
 public abstract class Account {
     private String userName;
     private String password;

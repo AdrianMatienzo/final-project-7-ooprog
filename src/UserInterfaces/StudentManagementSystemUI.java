@@ -1,3 +1,5 @@
+package userinterfaces;
+
 public class StudentManagementSystemUI{
     public void addStudentRecord(){
 
