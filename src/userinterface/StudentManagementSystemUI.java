@@ -1,6 +1,12 @@
 package userinterface;
 
+import util.StudentFileHandler;
+import util.InputValidation;
+
 public class StudentManagementSystemUI{
+    private static InputValidation VALIDATOR = InputValidation.getInstance();
+    private static StudentFileHandler STUDENTFILEHANDLER = StudentFileHandler.getInstance();
+
     public void addStudentRecord(){
 
     }
