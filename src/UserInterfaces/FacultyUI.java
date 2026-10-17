@@ -1,5 +1,5 @@
-public class FacultyUI implements StudentManagementSystemMenu{
-    final InputValidation inputValidator = new InputValidation();
+public class FacultyUI implements RoleMenu{
+    private static InputValidation VALIDATION = InputValidation.getInstance();
 
     public void roleMenu(){
         boolean isRunning = true;
@@ -13,7 +13,7 @@ public class FacultyUI implements StudentManagementSystemMenu{
             System.out.println("2. Log Out");
 
             System.out.println("--------------------------------------------------------");
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-2).", 1, 2);
+            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-2).", 1, 2);
             switch (choice){
                 case 1:
                     studentManagementSystemMenu();
@@ -50,7 +50,7 @@ public class FacultyUI implements StudentManagementSystemMenu{
             System.out.println("7. Back to Faculty Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
+            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
             switch (choice){
                 case 1:
                     StudentManagementUI.viewAllStudentRecords();
@@ -83,5 +83,10 @@ public class FacultyUI implements StudentManagementSystemMenu{
                     
             }
         }
+    }
+
+    @Override 
+    public void accountManagementSystemMenu(){
+        System.out.println("This menu is not accessible.");
     }
 }

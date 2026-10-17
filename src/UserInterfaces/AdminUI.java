@@ -1,5 +1,5 @@
-public class AdminUI implements StudentManagementSystemMenu, AccountManagementSystemMenu{
-    final InputValidation inputValidator = new InputValidation();
+public class AdminUI implements RoleMenu{
+    private static InputValidation VALIDATOR = InputValidation.getInstance();
 
     public void roleMenu(){
 
@@ -15,7 +15,7 @@ public class AdminUI implements StudentManagementSystemMenu, AccountManagementSy
             System.out.println("3. Log Out");
 
             System.out.println("--------------------------------------------------------");
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-3).", 1, 3);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-3).", 1, 3);
             switch (choice){
                 case 1:
                     studentManagementSystemMenu();
@@ -58,7 +58,7 @@ public class AdminUI implements StudentManagementSystemMenu, AccountManagementSy
             System.out.println("9. Back to Admin Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
             switch (choice){
                 case 1:
                     StudentManagementUI.addStudentRecord();
@@ -119,7 +119,7 @@ public class AdminUI implements StudentManagementSystemMenu, AccountManagementSy
             System.out.println("6. Back to Admin Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-6).", 1, 6);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-6).", 1, 6);
             switch (choice){
                 case 1:
                     AccountManagementUI.addUserAccount();

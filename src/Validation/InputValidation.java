@@ -1,6 +1,17 @@
 import java.util.Scanner;
 
 public class InputValidation{
+    private static InputValidation instance;
+
+    private InputValidation() {}
+
+    public static InputValidation getInstance() {
+        if(instance == null){
+            instance = new InputValidation();
+        }
+        return instance;
+    }
+
     private static Scanner sc = new Scanner(System.in);
 
     public String getValidatedStringInput(String prompt, String errorMessage, String regexPattern){

@@ -1,9 +1,13 @@
 public class SystemStartUI{
-    final InputValidation inputValidator = new InputValidation();
+    private static InputValidation VALIDATOR = InputValidation.getInstance();
+    private static FileHandler FILEHANDLER = FileHandler.getInstance();
+    private static AccountManagementSystemManager AccountManager = AccountManagementSystemManager.getInstance(); 
 
     public void start(){
-        AccountsList.UserAccounts.add(new Admin("admin", "admin123"));
-        AccountsList.UserAccounts.add(new Faculty("faculty", "faculty123"));
+        AccountManager.addAccount(new Admin("admin", "admin123"));
+        AccountManager.addAccount(new Faculty("faculty", "faculty123"));
+
+        FILEHANDLER.saveAccountsToFile();
         boolean isRunning = true;
 
         while (isRunning){
@@ -18,8 +22,7 @@ public class SystemStartUI{
 
             System.out.println("=======================================================");
 
-            int choice = inputValidator.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-2).", 1, 2);
-
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-2).", 1, 2);
 
             switch (choice){
                 case 1:
@@ -43,17 +46,13 @@ public class SystemStartUI{
         String userName = promptUsername();
         String password = promptPassword();
 
-        boolean logInSuccessful = false;
+        String role = FILEHANDLER.logInFromFile(userName, password);
 
-        for (Account account : AccountsList.UserAccounts){
-            if (!account.getUserName().equals(userName) ||!account.getPassword().equals(password)) {
-                continue;
-            }
+        if (role == null) {
+            System.out.println("Invalid username or password. Please try again.\n");
+        } else {
+            System.out.println("Login Successful! Welcome, " + userName + "!\n");
 
-            logInSuccessful = true;
-            System.out.println("Login Successful! Welcome, " + userName + "!");
-
-            String role = account.getRole();
             switch (role){
                 case "Admin":
                     AdminUI adminUI = new AdminUI();
@@ -64,24 +63,18 @@ public class SystemStartUI{
                     FacultyUI facultyUI = new FacultyUI();
                     facultyUI.roleMenu();
                     break;
-
+                        
                 default:
-                    System.out.println("Invalid role. Please try again.");
+                    System.out.println("Invalid role.");
             }
-
-            break;
         }
-
-        if(!logInSuccessful){
-            System.out.println("Invalid username or password. Please try again.");
-        }
-    }
+    }        
 
     public String promptUsername(){
-        return inputValidator.getValidatedStringInput("Enter Username: ", "Invalid input! Username cannot be empty.", "^.+$");
+        return VALIDATOR.getValidatedStringInput("Enter Username: ", "Invalid input! Username cannot be empty.", "^.+$");
     }
 
     public String promptPassword(){
-        return inputValidator.getValidatedStringInput("Enter Password: ", "Invalid input! Password cannot be empty.", "^.+$");
+        return VALIDATOR.getValidatedStringInput("Enter Password: ", "Invalid input! Password cannot be empty.", "^.+$");
     }
 }

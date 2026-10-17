@@ -62,4 +62,8 @@ public class Student {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String toString(){
+        return String.format("%s|%s|%s|%s|%s|%s", getId(), getName(), getAge(), getYearLevel(), getCourse(), getStatus());
+    }
 }

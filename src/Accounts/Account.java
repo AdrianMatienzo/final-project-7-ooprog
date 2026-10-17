@@ -27,4 +27,8 @@ public abstract class Account {
 
     public abstract void setRole(String role);
 
+    public String toString(){
+        return String.format("%s|%s|%s", getUserName(), getPassword(), getRole());
+    }
+
 }
