@@ -1,19 +1,15 @@
 package userinterfaces;
 
 import util.*;
-import managers.*;
 import objects.*;
 
 public class SystemStartUI{
     private static InputValidation VALIDATOR = InputValidation.getInstance();
-    private static FileHandler FILEHANDLER = FileHandler.getInstance();
-    private static AccountManagementSystemManager AccountManager = AccountManagementSystemManager.getInstance(); 
+    private static AccountFileHandler ACCOUNTFILEHANDLER = AccountFileHandler.getInstance();
 
     public void start(){
-        AccountManager.addAccount(new Admin("admin", "admin123"));
-        AccountManager.addAccount(new Faculty("faculty", "faculty123"));
-
-        FILEHANDLER.saveAccountsToFile();
+        ACCOUNTFILEHANDLER.saveAccountToFile(new Admin("admin", "admin123"));
+        ACCOUNTFILEHANDLER.saveAccountToFile(new Faculty("faculty", "faculty123"));
         boolean isRunning = true;
 
         while (isRunning){
@@ -52,7 +48,7 @@ public class SystemStartUI{
         String userName = promptUsername();
         String password = promptPassword();
 
-        String role = FILEHANDLER.logInFromFile(userName, password);
+        String role = ACCOUNTFILEHANDLER.logInFromFile(userName, password);
 
         if (role == null) {
             System.out.println("Invalid username or password. Please try again.\n");
