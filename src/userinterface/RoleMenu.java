@@ -1,4 +1,4 @@
-package userinterfaces;
+package userinterface;
 
 public interface RoleMenu {
     public void studentManagementSystemMenu();

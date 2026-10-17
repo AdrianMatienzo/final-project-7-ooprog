@@ -1,6 +1,6 @@
 package app;
 
-import userinterfaces.SystemStartUI;
+import userinterface.SystemStartUI;
 import util.*;
 
 public class Main{
