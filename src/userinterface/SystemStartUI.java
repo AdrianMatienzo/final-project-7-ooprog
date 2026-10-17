@@ -1,4 +1,4 @@
-package userinterfaces;
+package userinterface;
 
 import util.*;
 import objects.*;
