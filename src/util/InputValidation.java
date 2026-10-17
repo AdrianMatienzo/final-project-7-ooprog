@@ -85,32 +85,4 @@ public class InputValidation{
         }
         return value;
     }
-
-    public String getValidatedItemCategory(String prompt){
-        String userInput = "";
-        boolean running = true;
-
-        String itemCategories[] = {"Clothing", "Electronics", "Entertainment"};
-
-        while (running){
-            System.out.print(prompt);   
-            userInput = sc.nextLine().trim();
-
-            for (String category : itemCategories){
-                if (userInput.equalsIgnoreCase(category)){
-                    userInput = category;
-                    running = false;
-                    break;
-                }
-            }
-
-            if (!running){
-                break;
-            }
-            
-            System.out.printf("Category '%s' does not exist! Please enter a valid category.\n", userInput);
-        }
-        return userInput;
-    }
-
 }
