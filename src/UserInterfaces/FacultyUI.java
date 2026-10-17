@@ -1,3 +1,7 @@
+package userinterfaces;
+
+import util.*;
+
 public class FacultyUI implements RoleMenu{
     private static InputValidation VALIDATION = InputValidation.getInstance();
 
