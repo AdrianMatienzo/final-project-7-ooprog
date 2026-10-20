@@ -1,6 +1,7 @@
 package util;
 
 import java.io.*;
+import java.util.*;
 
 public class StudentFileHandler{
     private static StudentFileHandler instance;
@@ -24,6 +25,28 @@ public class StudentFileHandler{
         } catch (IOException e) {
             System.out.println("Error creating accounts file: "
                     + e.getMessage());
+        }
+    }
+
+    public void createStudentList(List<String> students){
+        try (BufferedReader reader =
+            new BufferedReader(new FileReader("STUDENTS.txt"))) {
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            students.add(line);
+        }
+
+        } catch (IOException e) {
+            System.out.println("Error reading student records: "
+                    + e.getMessage());
+            return;
+        }
+
+        if (students.isEmpty()) {
+            System.out.println("No student records found!");
+            return;
         }
     }
 }

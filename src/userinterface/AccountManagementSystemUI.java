@@ -13,27 +13,30 @@ public class AccountManagementSystemUI{
         System.out.println("=======================================================");
         System.out.println("                    Add New Account                    ");
         System.out.println("=======================================================");
-
         Account account = null;
-        String username = promptUsername();
-        String password = promptPassword();
+        boolean isRunning = true;
+        while(isRunning){
+            String username = promptNewUsername();
+            String password = promptNewPassword();
 
-        System.out.println("--------------------------------------------------------");
-        System.out.println("Roles:");
-        System.out.println("1. Admin");
-        System.out.println("2. Faculty");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("Roles:");
+            System.out.println("1. Admin");
+            System.out.println("2. Faculty");
 
-        int roleChoice = promptRoleChoice();
+            int roleChoice = promptRoleChoice();
 
-        switch (roleChoice){
-            case 1:
-                account = new Admin(username, password);
-                break;
-            case 2:
-                account = new Faculty(username, password);
-                break;
+            switch (roleChoice){
+                case 1:
+                    account = new Admin(username, password);
+                    break;
+                case 2:
+                    account = new Faculty(username, password);
+                    break;
+            }
+            ACCOUNTFILEHANDLER.saveAccountToFile(account);
+            isRunning = false;
         }
-        ACCOUNTFILEHANDLER.saveAccountToFile(account);
     }
 
     public void viewAllUserAccounts(){
@@ -49,14 +52,38 @@ public class AccountManagementSystemUI{
     }
 
     public void deleteUserAccount(){
+        System.out.println("=======================================================");
+        System.out.println("                    Delete Account                     ");
+        System.out.println("=======================================================");
+
+        String username = promptUsername();
+
+        ACCOUNTFILEHANDLER.deleteAccount(username);
 
     }
-    
+
     public String promptUsername(){
         return VALIDATOR.getValidatedStringInput("Enter username: ", "Invalid input! Username cannot be empty.", "^.+$");
     }
+    
+    public String promptNewUsername(){
+        String username = ""; 
+        boolean validUsername = false;
 
-    public String promptPassword(){
+        while (!validUsername){
+            username = VALIDATOR.getValidatedStringInput("Enter username: ", "Invalid input! Username cannot be empty.", "^.+$");
+
+            if (ACCOUNTFILEHANDLER.usernameExists(username)){
+                System.out.println("Duplicate Username! Please enter a new username.");
+            }
+            else{
+                validUsername = true;
+            }
+        }
+        return username;
+    }
+
+    public String promptNewPassword(){
         return VALIDATOR.getValidatedStringInput("Enter password: ", "Invalid input! Password cannot be empty.", "^.+$");
     }
 
