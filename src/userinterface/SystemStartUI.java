@@ -1,15 +1,12 @@
 package userinterface;
 
 import util.*;
-import objects.*;
 
 public class SystemStartUI{
     private static InputValidation VALIDATOR = InputValidation.getInstance();
     private static AccountFileHandler ACCOUNTFILEHANDLER = AccountFileHandler.getInstance();
 
     public void start(){
-        ACCOUNTFILEHANDLER.saveAccountToFile(new Admin("admin", "admin123"));
-        ACCOUNTFILEHANDLER.saveAccountToFile(new Faculty("faculty", "faculty123"));
         boolean isRunning = true;
 
         while (isRunning){

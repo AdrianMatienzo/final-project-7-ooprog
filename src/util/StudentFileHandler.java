@@ -19,9 +19,7 @@ public class StudentFileHandler{
         File file = new File("STUDENTS.txt");
 
         try {
-            if (file.createNewFile()) {
-                System.out.println("Accounts file created!");
-            }
+            file.createNewFile();
         } catch (IOException e) {
             System.out.println("Error creating accounts file: "
                     + e.getMessage());

@@ -4,9 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import objects.Account;
-import objects.Admin;
-import objects.Faculty;
+import models.Account;
+import models.Admin;
+import models.Faculty;
 
 public class AccountFileHandler {
     private static AccountFileHandler instance;
@@ -24,8 +24,9 @@ public class AccountFileHandler {
         File file = new File("ACCOUNTS.txt");
 
         try {
-            if (file.createNewFile()) {
-                System.out.println("Accounts file created!");
+            if(file.createNewFile()){
+                saveAccountToFile(new Admin("admin", "admin123"));
+                saveAccountToFile(new Faculty("faculty", "faculty123"));
             }
         } catch (IOException e) {
             System.out.println("Error creating accounts file: "
