@@ -25,8 +25,12 @@ public class StudentManagementSystemUI{
 
     public void sortAllStudentRecords(){
         List<String> students = new ArrayList<>();
-
         STUDENTFILEHANDLER.createStudentList(students);
+
+        if (students.isEmpty()){
+            System.out.println("No student records found!");
+            return;
+        }
         System.out.println("=======================================================");
         System.out.println("                   Sort Student Records                ");
         System.out.println("=======================================================");
@@ -123,6 +127,11 @@ public class StudentManagementSystemUI{
     public void displayNumberOfStudents(){
         List<String> students = new ArrayList<>();
         STUDENTFILEHANDLER.createStudentList(students);
+
+        if (students.isEmpty()){
+            System.out.println("No student records found!");
+            return;
+        }
 
         int[] yearCounts = new int[4];
         int[] statusCounts = new int[4];

@@ -43,7 +43,6 @@ public class StudentFileHandler{
         }
 
         if (students.isEmpty()) {
-            System.out.println("No student records found!");
             return;
         }
     }

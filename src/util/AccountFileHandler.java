@@ -100,6 +100,10 @@ public class AccountFileHandler {
     }
 
     public void deleteAccount (String username){
+        if (username.equalsIgnoreCase("admin") || username.equalsIgnoreCase("faculty")){
+            System.out.println("Cannot delete original accounts.");
+            return;
+        }
         List<String> accounts = new ArrayList<>();
         boolean accountFound = false;
 
@@ -143,6 +147,27 @@ public class AccountFileHandler {
         } catch (IOException e) {
             System.out.println("Error updating accounts file: "
                     + e.getMessage());
+        }
+    }
+
+    public void createAccountList(List<String> accounts){
+        try (BufferedReader reader =
+            new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            accounts.add(line);
+        }
+
+        } catch (IOException e) {
+            System.out.println("Error reading student records: "
+                    + e.getMessage());
+            return;
+        }
+
+        if (accounts.isEmpty()) {
+            return;
         }
     }
 }
