@@ -1,6 +1,8 @@
 package util;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import objects.Account;
 import objects.Admin;
@@ -32,11 +34,6 @@ public class AccountFileHandler {
     }
 
     public void saveAccountToFile(Account account) {
-        if (usernameExists(account.getUserName())) {
-            System.out.println("Error: Username already exists!");
-            return;
-        }
-
         try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
             String role;
 
@@ -99,5 +96,52 @@ public class AccountFileHandler {
         }   
 
         return null;
+    }
+
+    public void deleteAccount (String username){
+        List<String> accounts = new ArrayList<>();
+        boolean accountFound = false;
+
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader("ACCOUNTS.txt"))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] accountData = line.split("\\|", -1);
+
+                if (accountData.length > 0 &&
+                        accountData[0].equalsIgnoreCase(username)) {
+                    accountFound = true;
+                } else {
+                    accounts.add(line);
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading accounts file: "
+                    + e.getMessage());
+            return;
+        }
+
+        if (!accountFound) {
+            System.out.println("Account not found!");
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("ACCOUNTS.txt", false))) {
+
+            for (String line : accounts) {
+                writer.write(line);
+                writer.newLine();
+            }
+
+            System.out.println("Account deleted successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Error updating accounts file: "
+                    + e.getMessage());
+        }
     }
 }
