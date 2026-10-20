@@ -1,9 +1,9 @@
 package userinterface;
 
+import models.Account;
+import models.Admin;
+import models.Faculty;
 import util.*;
-import objects.Account;
-import objects.Admin;
-import objects.Faculty;
 
 public class AccountManagementSystemUI{
     private static InputValidation VALIDATOR = InputValidation.getInstance();
