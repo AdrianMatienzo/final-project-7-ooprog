@@ -1,7 +1,6 @@
 package util;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import models.Account;
@@ -25,8 +24,8 @@ public class AccountFileHandler {
 
         try {
             if(file.createNewFile()){
-                saveAccountToFile(new Admin("admin", "admin123"));
-                saveAccountToFile(new Faculty("faculty", "faculty123"));
+                addAccount(new Admin("admin", "admin123"));
+                addAccount(new Faculty("faculty", "faculty123"));
             }
         } catch (IOException e) {
             System.out.println("Error creating accounts file: "
@@ -34,20 +33,33 @@ public class AccountFileHandler {
         }
     }
 
-    public void saveAccountToFile(Account account) {
-        try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
-            String role;
+    public String logInFromFile(String userName, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+            String line;
 
-            if (account instanceof Admin) {
-                role = "Admin";
-            } else if (account instanceof Faculty) {
-                role = "Faculty";
-            } else {
-                System.out.println("Invalid account type!");
-                return;
+            while ((line = reader.readLine()) != null) {
+
+                String[] accountData = line.split("\\|");
+
+                String storedUserName = accountData[0];
+                String storedPassword = accountData[1].replace("\"", "");
+                String role = accountData[2].replace("\"", "");
+
+                if (storedUserName.equals(userName) && storedPassword.equals(password)) {
+                    return role;
+                }
             }
 
-            writer.write(account.getUserName() + "|" + account.getPassword() + "|" + role + System.lineSeparator());
+        } catch (IOException e) {
+            System.out.println("Error reading accounts file: " + e.getMessage());
+        }   
+
+        return null;
+    }
+
+    public void addAccount(Account account) {
+        try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
+            writer.write(account.getUserName() + "|" + account.getPassword() + "|" + account.getRole() + System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error: Unable to save account to file.");
         }
@@ -75,74 +87,38 @@ public class AccountFileHandler {
         return false;
         }   
 
-    public String logInFromFile(String userName, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-
-                String[] accountData = line.split("\\|");
-
-                String storedUserName = accountData[0];
-                String storedPassword = accountData[1].replace("\"", "");
-                String role = accountData[2].replace("\"", "");
-
-                if (storedUserName.equals(userName) && storedPassword.equals(password)) {
-                    return role;
-                }
-            }
-
-        } catch (IOException e) {
-            System.out.println("Error reading accounts file: " + e.getMessage());
-        }   
-
-        return null;
-    }
-
-    public void deleteAccount (String username){
-        List<String> accounts = new ArrayList<>();
-        boolean accountFound = false;
-
-        try (BufferedReader reader = new BufferedReader(
-                new FileReader("ACCOUNTS.txt"))) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] accountData = line.split("\\|", -1);
-
-                if (accountData.length > 0 &&
-                        accountData[0].equalsIgnoreCase(username)) {
-                    accountFound = true;
-                } else {
-                    accounts.add(line);
-                }
-            }
-
-        } catch (IOException e) {
-            System.out.println("Error reading accounts file: "
-                    + e.getMessage());
-            return;
-        }
-
-        if (!accountFound) {
-            System.out.println("Account not found!");
-            return;
-        }
+    public void saveUpdatedAccounts(List<String> accounts) {
 
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter("ACCOUNTS.txt", false))) {
 
-            for (String line : accounts) {
-                writer.write(line);
+            for (String account : accounts) {
+                writer.write(account);
                 writer.newLine();
             }
 
-            System.out.println("Account deleted successfully!");
+        } catch (IOException e) {
+            System.out.println("Error updating account records: "
+                    + e.getMessage());
+        }
+    }
+
+    public void createAccountList(List<String> accounts){
+        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            accounts.add(line);
+        }
 
         } catch (IOException e) {
-            System.out.println("Error updating accounts file: "
-                    + e.getMessage());
+            System.out.println("Error reading student records: " + e.getMessage());
+            return;
+        }
+
+        if (accounts.isEmpty()) {
+            return;
         }
     }
 }
