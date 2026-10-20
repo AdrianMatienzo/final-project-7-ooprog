@@ -46,4 +46,21 @@ public class StudentFileHandler{
             return;
         }
     }
+
+    public void saveUpdatedStudents(List<String> students) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("STUDENTS.txt", false))) {
+
+            for (String student : students) {
+                writer.write(student);
+                writer.newLine();
+            }
+
+            System.out.println("Student record updated successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Error updating student record: "
+                    + e.getMessage());
+        }
+    }
 }
