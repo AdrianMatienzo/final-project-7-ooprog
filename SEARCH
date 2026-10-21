@@ -1,0 +1,104 @@
+import java.util.ArrayList;
+import java.util.List;
+
+/** Part 2: Search User Account. */
+public class SearchUserAccount {
+
+    private final AccountHelper helper;
+
+    public SearchUserAccount(AccountHelper helper) {
+        this.helper = helper;
+    }
+
+    public void run() {
+        System.out.println("\n--- SEARCH USER ACCOUNT ---");
+
+        if (helper.getAccounts().isEmpty()) {
+            System.out.println("No user accounts to search.");
+            return;
+        }
+
+        System.out.println("Search by:");
+        System.out.println("  1. User ID (exact)");
+        System.out.println("  2. Username (exact)");
+        System.out.println("  3. Full Name (partial match)");
+        System.out.println("  4. Email (exact)");
+        System.out.println("  5. Role");
+        System.out.println("  6. Status");
+
+        String option = helper.prompt("Enter option (1-6)",
+                s -> s.matches("[1-6]"),
+                "Please enter a number from 1 to 6 only.");
+        if (option == null) return;
+
+        List<UserAccount> results = new ArrayList<>();
+
+        switch (option) {
+            case "1": {
+                String id = helper.prompt("Enter User ID (e.g., U001)",
+                        s -> AccountHelper.ID_PATTERN.matcher(s.toUpperCase()).matches(),
+                        "ID must start with 'U' followed by 3-6 digits (e.g., U001).");
+                if (id == null) return;
+                UserAccount found = helper.findById(id);
+                if (found != null) results.add(found);
+                break;
+            }
+            case "2": {
+                String uname = helper.prompt("Enter Username",
+                        s -> AccountHelper.USERNAME_PATTERN.matcher(s).matches(),
+                        "Username must be 4-20 chars, start with a letter, and use only letters, numbers, or underscore.");
+                if (uname == null) return;
+                UserAccount found = helper.findByUsername(uname);
+                if (found != null) results.add(found);
+                break;
+            }
+            case "3": {
+                String keyword = helper.prompt("Enter name or part of a name",
+                        s -> s.length() >= 2 && s.length() <= 50 && s.matches("^[A-Za-z .'-]+$"),
+                        "Keyword must be 2-50 characters (letters, spaces, . ' - only).");
+                if (keyword == null) return;
+                for (UserAccount a : helper.getAccounts()) {
+                    if (a.getFullName().toLowerCase().contains(keyword.toLowerCase())) results.add(a);
+                }
+                break;
+            }
+            case "4": {
+                String mail = helper.prompt("Enter Email",
+                        s -> s.length() <= 100 && AccountHelper.EMAIL_PATTERN.matcher(s).matches(),
+                        "Invalid email format (example: name@domain.com).");
+                if (mail == null) return;
+                UserAccount found = helper.findByEmail(mail);
+                if (found != null) results.add(found);
+                break;
+            }
+            case "5": {
+                String role = helper.prompt("Enter Role " + String.join("/", AccountHelper.ROLES),
+                        s -> AccountHelper.isInList(s, AccountHelper.ROLES),
+                        "Role must be one of: " + String.join(", ", AccountHelper.ROLES) + ".");
+                if (role == null) return;
+                for (UserAccount a : helper.getAccounts()) {
+                    if (a.getRole().equalsIgnoreCase(role)) results.add(a);
+                }
+                break;
+            }
+            case "6": {
+                String status = helper.prompt("Enter Status " + String.join("/", AccountHelper.STATUSES),
+                        s -> AccountHelper.isInList(s, AccountHelper.STATUSES),
+                        "Status must be one of: " + String.join(", ", AccountHelper.STATUSES) + ".");
+                if (status == null) return;
+                for (UserAccount a : helper.getAccounts()) {
+                    if (a.getStatus().equalsIgnoreCase(status)) results.add(a);
+                }
+                break;
+            }
+            default: break;
+        }
+
+        if (results.isEmpty()) {
+            System.out.println("\nNo matching user account found.");
+        } else {
+            System.out.println("\nSearch results (" + results.size() + " found):");
+            helper.printTable(results);
+        }
+    }
+}
