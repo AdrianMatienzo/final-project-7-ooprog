@@ -1,0 +1,39 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+/** Part 1: View All User Accounts. */
+public class ViewAllUserAccounts {
+
+    private final AccountHelper helper;
+
+    public ViewAllUserAccounts(AccountHelper helper) {
+        this.helper = helper;
+    }
+
+    public void run() {
+        System.out.println("\n--- ALL USER ACCOUNTS ---");
+
+        if (helper.getAccounts().isEmpty()) {
+            System.out.println("No user accounts found.");
+            return;
+        }
+
+        String sortChoice = helper.prompt("Sort by: 1) ID  2) Name  3) Role (type cancel to go back)",
+                s -> s.matches("[1-3]"),
+                "Please enter 1, 2, or 3 only.");
+        if (sortChoice == null) return;
+
+        List<UserAccount> sorted = new ArrayList<>(helper.getAccounts());
+        switch (sortChoice) {
+            case "1": sorted.sort(Comparator.comparing(UserAccount::getId)); break;
+            case "2": sorted.sort(Comparator.comparing(a -> a.getFullName().toLowerCase())); break;
+            case "3": sorted.sort(Comparator.comparing(UserAccount::getRole)
+                                            .thenComparing(UserAccount::getId)); break;
+            default: break;
+        }
+
+        helper.printTable(sorted);
+        System.out.println("Total accounts: " + sorted.size());
+    }
+}
