@@ -1,0 +1,4 @@
+12ABCS|Adrian Mikhail B. Matienzo|18|1st Year|BS Computer Science|Active
+23AADH|Axel Patena|19|2nd Year|BS Computer Science|Transferred
+20BADB|Zach Navarro|19|3rd Year|BS Architecture|Inactive
+90AASK|Remi De La Pena|24|4th Year|BS Psychology|Graduated

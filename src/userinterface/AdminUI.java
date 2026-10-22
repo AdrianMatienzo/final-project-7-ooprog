@@ -1,6 +1,6 @@
 package userinterface;
 
-import util.*;
+import util.InputValidation;
 
 public class AdminUI implements RoleMenu{
     private static InputValidation VALIDATOR = InputValidation.getInstance();
