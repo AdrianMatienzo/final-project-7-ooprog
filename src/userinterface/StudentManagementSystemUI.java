@@ -1,7 +1,6 @@
 package userinterface;
 
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import objects.Student;
@@ -28,7 +27,7 @@ public class StudentManagementSystemUI{
 
     }
 
-    public void searchStudentRecord(){
+    public void searchStudentRecord(){  
 
     }
 
@@ -37,7 +36,7 @@ public class StudentManagementSystemUI{
     }
 
     public void filterStudentRecords(){
-        List<Student> students = loadStudents();
+        List<Student> students = STUDENTFILEHANDLER.loadStudents();
 
         if (students.isEmpty()) {
             System.out.println("No student records found.");
@@ -93,7 +92,7 @@ public class StudentManagementSystemUI{
         System.out.println("                Update Student Record                  ");
         System.out.println("=======================================================");
 
-        List<Student> students = loadStudents();
+        List<Student> students = STUDENTFILEHANDLER.loadStudents();
 
         if (students.isEmpty()){
             System.out.println("No student records found.\n");
@@ -101,7 +100,7 @@ public class StudentManagementSystemUI{
         }
 
         String id = VALIDATOR.getValidatedStringInput("Enter Student ID to update: ", "Invalid input! Student ID cannot be empty.", "^\\s*\\S.*$").trim();
-        Student student = findStudentById(students, id);
+        Student student = STUDENTFILEHANDLER.findStudentById(students, id);
 
         if (student == null){
             System.out.println("Student record not found.\n");
@@ -132,26 +131,26 @@ public class StudentManagementSystemUI{
                             "Invalid input! Please enter a number between " + MIN_AGE + " and " + MAX_AGE + ".",
                             MIN_AGE, MAX_AGE);
                     student.setAge(age);
-                    saveStudents(students);
+                    STUDENTFILEHANDLER.saveStudents(students);
                     System.out.println("Age updated successfully!");
                     break;
 
                 case 2:
                     student.setYearLevel(promptYearLevel());
-                    saveStudents(students);
+                    STUDENTFILEHANDLER.saveStudents(students);
                     System.out.println("Year level updated successfully!");
                     break;
 
                 case 3:
                     String course = VALIDATOR.getValidatedStringInput("Enter new course/program: ", "Invalid input! Course/Program cannot be empty.", "^[^|]*\\S[^|]*$").trim();
                     student.setCourse(course);
-                    saveStudents(students);
+                    STUDENTFILEHANDLER.saveStudents(students);
                     System.out.println("Course/Program updated successfully!");
                     break;
 
                 case 4:
                     student.setStatus(promptEnrollmentStatus());
-                    saveStudents(students);
+                    STUDENTFILEHANDLER.saveStudents(students);
                     System.out.println("Enrollment status updated successfully!");
                     break;
 
@@ -167,7 +166,7 @@ public class StudentManagementSystemUI{
         System.out.println("                Delete Student Record                  ");
         System.out.println("=======================================================");
 
-        List<Student> students = loadStudents();
+        List<Student> students = STUDENTFILEHANDLER.loadStudents();
 
         if (students.isEmpty()){
             System.out.println("No student records found.\n");
@@ -176,7 +175,7 @@ public class StudentManagementSystemUI{
 
         String id = VALIDATOR.getValidatedStringInput("Enter Student ID to delete: ", 
         "Invalid input! Student ID cannot be empty.", "^\\s*\\S.*$").trim();
-        Student student = findStudentById(students, id);
+        Student student = STUDENTFILEHANDLER.findStudentById(students, id);
 
         if (student == null) {
             System.out.println("Student not found.\n");
@@ -195,7 +194,7 @@ public class StudentManagementSystemUI{
 
         if (confirm.equalsIgnoreCase("Y")){
             students.remove(student);
-            saveStudents(students);
+            STUDENTFILEHANDLER.saveStudents(students);
             System.out.println("Student record deleted successfully!\n");
         } else {
             System.out.println("Deletion cancelled.\n");
@@ -203,66 +202,7 @@ public class StudentManagementSystemUI{
 
     }
 
-    private List<Student> loadStudents(){
-        List<Student> students = new ArrayList<>();
-        File file = new File(STUDENTS_FILE);
-
-        if (!file.exists()){
-            return students;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-
-            while ((line = reader.readLine()) != null){
-                line = line.trim();
-                if (line.isEmpty()){
-                    continue;
-                }
-
-                String[] data = line.split("\\|");
-                if (data.length < 6){
-                    continue;
-                }
-
-                try {
-                    students.add(new Student(
-                        data[0].trim(),
-                        data[1].trim(),
-                        Integer.parseInt(data[2].trim()),
-                        data[3].trim(),
-                        data[4].trim(),
-                        data[5].trim()));
-                } catch (NumberFormatException e){
-                    // skip malformed line
-                }
-            }
-        } catch (IOException e){
-            System.out.println("Error: Unable to read students file.");
-        }
-
-        return students;
-    }
-
-    private void saveStudents(List<Student> students){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STUDENTS_FILE, false))) {
-            for (Student student : students){
-                writer.write(student.toString());
-                writer.write(System.lineSeparator());
-            }
-        } catch (IOException e){
-            System.out.println("Error: Unable to save students file.");
-        }
-    }
-
-    private Student findStudentById(List<Student> students, String id){
-        for (Student student : students){
-            if (student.getId().equalsIgnoreCase(id)){
-                return student;
-            }
-        }
-        return null;
-    }
+    
 
     private String promptYearLevel(){
         System.out.println("Year Level:");
