@@ -1,13 +1,17 @@
 package util;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import models.Account;
+import models.AccountIndex;
 import models.Admin;
 import models.Faculty;
 
 public class AccountFileHandler {
+    private static final Path ACCOUNTS_FILE = Path.of("src", "data", "ACCOUNTS.txt");
     private static AccountFileHandler instance;
 
     private AccountFileHandler() {}
@@ -20,9 +24,9 @@ public class AccountFileHandler {
     }
 
     public void createAccountsFile() {
-        File file = new File("ACCOUNTS.txt");
-
         try {
+            Files.createDirectories(ACCOUNTS_FILE.getParent());
+            File file = ACCOUNTS_FILE.toFile();
             if(file.createNewFile()){
                 addAccount(new Admin("admin", "admin123"));
                 addAccount(new Faculty("faculty", "faculty123"));
@@ -34,16 +38,16 @@ public class AccountFileHandler {
     }
 
     public String logInFromFile(String userName, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNTS_FILE.toFile()))) {
             String line;
 
             while ((line = reader.readLine()) != null) {
 
                 String[] accountData = line.split("\\|");
 
-                String storedUserName = accountData[0];
-                String storedPassword = accountData[1].replace("\"", "");
-                String role = accountData[2].replace("\"", "");
+                String storedUserName = accountData[AccountIndex.USERNAME.getIndex()];
+                String storedPassword = accountData[AccountIndex.PASSWORD.getIndex()].replace("\"", "");
+                String role = accountData[AccountIndex.ROLE.getIndex()].replace("\"", "");
 
                 if (storedUserName.equals(userName) && storedPassword.equals(password)) {
                     return role;
@@ -58,15 +62,16 @@ public class AccountFileHandler {
     }
 
     public void addAccount(Account account) {
-        try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
-            writer.write(account.getUserName() + "|" + account.getPassword() + "|" + account.getRole() + System.lineSeparator());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNTS_FILE.toFile(), true))) {
+            writer.write(account.toString());
+            writer.newLine();
         } catch (IOException e) {
             System.out.println("Error: Unable to save account to file.");
         }
     }
 
     public boolean usernameExists(String username) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNTS_FILE.toFile()))) {
 
             String line;
 
@@ -74,7 +79,7 @@ public class AccountFileHandler {
                 String[] accountData = line.split("\\|");
 
                 if (accountData.length > 0 &&
-                        accountData[0].equalsIgnoreCase(username)) {
+                        accountData[AccountIndex.USERNAME.getIndex()].equalsIgnoreCase(username)) {
                     return true;
                 }
             }
@@ -90,7 +95,7 @@ public class AccountFileHandler {
     public void saveUpdatedAccounts(List<String> accounts) {
 
         try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter("ACCOUNTS.txt", false))) {
+                new FileWriter(ACCOUNTS_FILE.toFile(), false))) {
 
             for (String account : accounts) {
                 writer.write(account);
@@ -104,7 +109,7 @@ public class AccountFileHandler {
     }
 
     public void createAccountList(List<String> accounts){
-        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNTS_FILE.toFile()))) {
 
         String line;
 

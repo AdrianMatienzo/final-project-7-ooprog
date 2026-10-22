@@ -1,7 +1,8 @@
 package app;
 
 import userinterface.SystemStartUI;
-import util.*;
+import util.AccountFileHandler;
+import util.StudentFileHandler;
 
 public class Main{
     private static AccountFileHandler ACCOUNTFILEHANDLER = AccountFileHandler.getInstance();
