@@ -566,8 +566,7 @@ public class StudentManagementSystemUI{
                 }
 
                 if (data[StudentIndex.STATUS.getIndex()].trim().equalsIgnoreCase(newStatus)) {
-                    System.out.println("Student already has the enrollment status: "
-                            + newStatus + ".");
+                    System.out.println("Student already has the enrollment status: " + newStatus + ".");
                     return;
                 }
 

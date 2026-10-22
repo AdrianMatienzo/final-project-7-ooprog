@@ -7,6 +7,7 @@ import models.Account;
 import models.AccountIndex;
 import models.Admin;
 import models.Faculty;
+
 import util.AccountFileHandler;
 import util.InputValidation;
 
@@ -52,8 +53,7 @@ public class AccountManagementSystemUI{
         System.out.println("                     All User Accounts                         ");
         System.out.println("===============================================================");
 
-        System.out.printf("%-25s %-20s %-15s%n",
-                "Username", "Password", "Role");
+        System.out.printf("%-25s %-20s %-15s%n", "Username", "Password", "Role");
 
         System.out.println("---------------------------------------------------------------");
 
@@ -73,11 +73,6 @@ public class AccountManagementSystemUI{
         List<String> accounts = new ArrayList<>();
 
         ACCOUNTFILEHANDLER.createAccountList(accounts);
-
-        if (accounts.isEmpty()) {
-            System.out.println("No account records found!");
-            return;
-        }
 
         System.out.println("=======================================================");
         System.out.println("                   Search Account                      ");
@@ -116,19 +111,12 @@ public class AccountManagementSystemUI{
 
         String username = promptUsername();
 
-        if(username.equals("admin") || username.equals("faculty")){
-            System.out.println("Cannot modify original accounts.");
-            return;
-        }
-
         int accountToUpdate = findAccountIndex(accounts, username);
 
         if (accountToUpdate == -1) {
             System.out.println("Username not found!");
             return;
         }
-
-        
 
         String[] data = accounts.get(accountToUpdate).split("\\|", -1);
 
@@ -148,6 +136,10 @@ public class AccountManagementSystemUI{
 
         switch (updateChoice) {
             case 1:
+                if(username.equals("admin") || username.equals("faculty")){
+                    System.out.println("Cannot modify the usernames of original accounts.");
+                    return;
+                }
                 boolean isRunning = true;
                 String updatedUsername = "";
                 while (isRunning){
@@ -180,6 +172,11 @@ public class AccountManagementSystemUI{
                 break;
 
             case 3:
+                if(username.equals("admin") || username.equals("faculty")){
+                    System.out.println("Cannot modify the roles of original accounts.");
+                    return;
+                }
+                
                 System.out.println("--------------------------------------------------------");
                 System.out.println("Select New Role:");
                 System.out.println("1. Admin");
@@ -289,7 +286,7 @@ public class AccountManagementSystemUI{
     }
 
     public String promptPassword(){
-        return VALIDATOR.getValidatedStringInput("Enter password: ", "Invalid input! Password cannot be empty.", "^.+$");
+        return VALIDATOR.getValidatedStringInput("Enter password: ", "Invalid input! Password cannot be empty and must contain at least 6 characters.", "^.{6,}$");
     }
 
     public int promptRoleChoice(){

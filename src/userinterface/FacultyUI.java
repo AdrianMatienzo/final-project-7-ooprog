@@ -14,16 +14,21 @@ public class FacultyUI implements RoleMenu{
             System.out.println("=======================================================");
 
             System.out.println("1. Student Management System");
-            System.out.println("2. Log Out");
+            System.out.println("2. Account Management System");
+            System.out.println("3. Log Out");
 
             System.out.println("--------------------------------------------------------");
-            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-2).", 1, 2);
+            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice (1-3): ", "Invalid input! Please enter a valid option (1-3).", 1, 3);
             switch (choice){
                 case 1:
                     studentManagementSystemMenu();
                     break;
 
                 case 2:
+                    accountManagementSystemMenu();
+                    break;
+                    
+                case 3:
                     isRunning = false;
                     System.out.println("Logging Out...\n");
                     break;
@@ -54,7 +59,7 @@ public class FacultyUI implements RoleMenu{
             System.out.println("7. Back to Faculty Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
+            int choice = VALIDATION.getValidatedIntegerMinMax("Enter your choice (1-7): ", "Invalid input! Please enter a valid option (1-7).", 1, 7);
             switch (choice){
                 case 1:
                     StudentManagementUI.viewAllStudentRecords();
@@ -85,12 +90,14 @@ public class FacultyUI implements RoleMenu{
                     System.out.println("Returning to Faculty Menu...\n");
                     break;
                     
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
 
     @Override 
     public void accountManagementSystemMenu(){
-        System.out.println("This menu is not accessible.");
+        System.out.println("This menu is not accessible for Faculty.");
     }
 }

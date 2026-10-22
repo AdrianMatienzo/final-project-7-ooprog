@@ -33,8 +33,7 @@ public class AccountFileHandler {
                 addAccount(new Faculty("faculty", "faculty123"));
             }
         } catch (IOException e) {
-            System.out.println("Error creating accounts file: "
-                    + e.getMessage());
+            System.out.println("Error creating accounts file: " + e.getMessage());
         }
     }
 
@@ -95,8 +94,7 @@ public class AccountFileHandler {
 
     public void saveUpdatedAccounts(List<String> accounts) {
 
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(ACCOUNTS_FILE.toFile(), false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNTS_FILE.toFile(), false))) {
 
             for (String account : accounts) {
                 writer.write(account);
@@ -120,10 +118,6 @@ public class AccountFileHandler {
 
         } catch (IOException e) {
             System.out.println("Error reading student records: " + e.getMessage());
-            return;
-        }
-
-        if (accounts.isEmpty()) {
             return;
         }
     }

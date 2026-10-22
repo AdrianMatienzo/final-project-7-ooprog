@@ -1,12 +1,20 @@
 package userinterface;
 
-import util.*;
+import util.InputValidation;
+import util.AccountFileHandler;
 
 public class SystemStartUI{
     private static InputValidation VALIDATOR = InputValidation.getInstance();
     private static AccountFileHandler ACCOUNTFILEHANDLER = AccountFileHandler.getInstance();
 
     public void start(){
+        System.out.println("-------------------------------------------------------");
+        System.out.println("Default Admin Username: admin");
+        System.out.println("Default Admin Password: admin123");
+        System.out.println("Default Faculty Username: faculty");
+        System.out.println("Default Faculty Password: faculty123");
+        System.out.println("-------------------------------------------------------");
+        System.out.println();
         boolean isRunning = true;
 
         while (isRunning){
@@ -39,7 +47,7 @@ public class SystemStartUI{
     }
 
     public void logInProcess(){
-        System.out.println("\n=======================================================");
+        System.out.println("=======================================================");
         System.out.println("                      Log In Page                      ");
         System.out.println("=======================================================");
         String userName = promptUsername();
@@ -48,9 +56,9 @@ public class SystemStartUI{
         String role = ACCOUNTFILEHANDLER.logInFromFile(userName, password);
 
         if (role == null) {
-            System.out.println("Invalid username or password. Please try again.\n");
+            System.out.println("Invalid username or password.");
         } else {
-            System.out.println("Login Successful! Welcome, " + userName + "!\n");
+            System.out.println("Login Successful! Welcome, " + userName + "!");
 
             switch (role){
                 case "Admin":
