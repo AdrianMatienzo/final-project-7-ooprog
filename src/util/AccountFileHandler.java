@@ -1,10 +1,11 @@
 package util;
 
 import java.io.*;
+import java.util.List;
 
-import objects.Account;
-import objects.Admin;
-import objects.Faculty;
+import models.Account;
+import models.Admin;
+import models.Faculty;
 
 public class AccountFileHandler {
     private static AccountFileHandler instance;
@@ -22,8 +23,9 @@ public class AccountFileHandler {
         File file = new File("ACCOUNTS.txt");
 
         try {
-            if (file.createNewFile()) {
-                System.out.println("Accounts file created!");
+            if(file.createNewFile()){
+                addAccount(new Admin("admin", "admin123"));
+                addAccount(new Faculty("faculty", "faculty123"));
             }
         } catch (IOException e) {
             System.out.println("Error creating accounts file: "
@@ -31,25 +33,33 @@ public class AccountFileHandler {
         }
     }
 
-    public void saveAccountToFile(Account account) {
-        if (usernameExists(account.getUserName())) {
-            System.out.println("Error: Username already exists!");
-            return;
-        }
+    public String logInFromFile(String userName, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+            String line;
 
-        try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
-            String role;
+            while ((line = reader.readLine()) != null) {
 
-            if (account instanceof Admin) {
-                role = "Admin";
-            } else if (account instanceof Faculty) {
-                role = "Faculty";
-            } else {
-                System.out.println("Invalid account type!");
-                return;
+                String[] accountData = line.split("\\|");
+
+                String storedUserName = accountData[0];
+                String storedPassword = accountData[1].replace("\"", "");
+                String role = accountData[2].replace("\"", "");
+
+                if (storedUserName.equals(userName) && storedPassword.equals(password)) {
+                    return role;
+                }
             }
 
-            writer.write(account.getUserName() + "|" + account.getPassword() + "|" + role + System.lineSeparator());
+        } catch (IOException e) {
+            System.out.println("Error reading accounts file: " + e.getMessage());
+        }   
+
+        return null;
+    }
+
+    public void addAccount(Account account) {
+        try (FileWriter writer = new FileWriter("ACCOUNTS.txt", true)) {
+            writer.write(account.getUserName() + "|" + account.getPassword() + "|" + account.getRole() + System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error: Unable to save account to file.");
         }
@@ -77,27 +87,38 @@ public class AccountFileHandler {
         return false;
         }   
 
-    public String logInFromFile(String userName, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
-            String line;
+    public void saveUpdatedAccounts(List<String> accounts) {
 
-            while ((line = reader.readLine()) != null) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("ACCOUNTS.txt", false))) {
 
-                String[] accountData = line.split("\\|");
-
-                String storedUserName = accountData[0];
-                String storedPassword = accountData[1].replace("\"", "");
-                String role = accountData[2].replace("\"", "");
-
-                if (storedUserName.equals(userName) && storedPassword.equals(password)) {
-                    return role;
-                }
+            for (String account : accounts) {
+                writer.write(account);
+                writer.newLine();
             }
 
         } catch (IOException e) {
-            System.out.println("Error reading accounts file: " + e.getMessage());
-        }   
+            System.out.println("Error updating account records: "
+                    + e.getMessage());
+        }
+    }
 
-        return null;
+    public void createAccountList(List<String> accounts){
+        try (BufferedReader reader = new BufferedReader(new FileReader("ACCOUNTS.txt"))) {
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            accounts.add(line);
+        }
+
+        } catch (IOException e) {
+            System.out.println("Error reading student records: " + e.getMessage());
+            return;
+        }
+
+        if (accounts.isEmpty()) {
+            return;
+        }
     }
 }

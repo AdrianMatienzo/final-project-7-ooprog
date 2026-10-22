@@ -1,0 +1,4 @@
+ABC123|Adrian Matienzo|10|1st Year|BS Computer Science|Active
+ABC122|Axel Patena|29|2nd Year|BS Computer Science|Transferred
+ABC111|Zach Navarro|19|3rd Year|BS Architecture|Transferred
+ABC090|Remi De La Pena|1|4th Year|BS Psychology|Graduated

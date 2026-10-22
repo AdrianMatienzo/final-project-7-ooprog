@@ -1,11 +1,6 @@
 package userinterface;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import objects.Student;
-import util.InputValidation;
-import util.StudentFileHandler;
 
 
 public class StudentManagementSystemUI{
@@ -32,268 +27,223 @@ public class StudentManagementSystemUI{
     }
 
     public void sortAllStudentRecords(){
+        List<String> students = new ArrayList<>();
+        STUDENTFILEHANDLER.createStudentList(students);
 
-    }
+        if (students.isEmpty()){
+            System.out.println("No student records found!");
+            return;
+        }
+        System.out.println("=======================================================");
+        System.out.println("                   Sort Student Records                ");
+        System.out.println("=======================================================");
+        System.out.println("1. Sort by Name");
+        System.out.println("2. Sort by Age");
+        System.out.println("3. Sort by Year Level");
+        System.out.println("-------------------------------------------------------");
+
+        int choice = promptSortChoice();
+        int orderChoice;
+
+        StudentSortStrategy strategy = null;
+        boolean ascending = false;
+
+
+        switch (choice){
+            case 1:
+                System.out.println("-------------------------------------------------------");  
+                System.out.println("Sort by Name");
+                System.out.println("1. A-Z (Ascending)");
+                System.out.println("2. Z-A (Descending)");
+                System.out.println("-------------------------------------------------------");  
+
+                orderChoice = promptOrderChoice();
+
+                if (orderChoice == 1){
+                    ascending = true;
+                }
+
+                strategy = new SortByName(ascending);
+
+                break;
+            case 2:
+                System.out.println("-------------------------------------------------------");  
+                System.out.println("Sort by Age");
+                System.out.println("1. Ascending (Youngest to Oldest)");
+                System.out.println("2. Descending (Oldest to Youngest)");
+                System.out.println("-------------------------------------------------------"); 
+
+                orderChoice = promptOrderChoice();
+
+                if (orderChoice == 1) {
+                    ascending = true;
+                }
+
+                strategy = new SortByAge(ascending);
+                break;
+            case 3:
+                System.out.println("-------------------------------------------------------");  
+                System.out.println("Sort by Year Level");
+                System.out.println("1. Ascending (1st to 4th Year)");
+                System.out.println("2. Descending (4th to 1st Year)");
+                System.out.println("-------------------------------------------------------");  
+
+                orderChoice = promptOrderChoice();
+
+                if (orderChoice == 1) {
+                    ascending = true;
+                }
+
+                strategy = new SortByYearLevel(ascending);
+                break;
+            default:
+                System.out.println("Invalid Choice!");
+        }
+
+        StudentSorter sorter = StudentSorter.getInstance();
+        sorter.setStrategy(strategy);
+        sorter.sort(students);
+        
+        System.out.println("\nSorted Student Records");
+        System.out.println("================================================================================================================");
+
+        System.out.printf(
+            "%-12s %-22s %-6s %-12s %-25s %-15s%n",
+            "Student ID", "Name", "Age", "Year Level", "Course/Program", "Status"
+        );
+
+        System.out.println("----------------------------------------------------------------------------------------------------------------");
+
+        for (String student : students) {
+            String[] data = student.split("\\|", -1);
+
+            System.out.printf("%-12s %-22s %-6s %-12s %-25s %-15s%n",data[0],data[1],data[2],data[3], data[4], data[5]);
+        }
+
+        System.out.println("================================================================================================================");
+            }
 
     public void filterStudentRecords(){
-        List<Student> students = STUDENTFILEHANDLER.loadStudents();
 
-        if (students.isEmpty()) {
-            System.out.println("No student records found.");
+
+    public void displayNumberOfStudents(){
+        List<String> students = new ArrayList<>();
+        STUDENTFILEHANDLER.createStudentList(students);
+
+        if (students.isEmpty()){
+            System.out.println("No student records found!");
             return;
         }
 
-        boolean isFiltering = true;
+        int[] yearCounts = new int[4];
+        int[] statusCounts = new int[4];
+        int[] totalStudents = new int[1];
 
-        while (isFiltering) {
-            System.out.println("=======================================================");
-            System.out.println("                Filter Student Records                 ");
-            System.out.println("=======================================================");
-            System.out.println("1. Filter by Year Level");
-            System.out.println("2. Filter by Course/Program");
-            System.out.println("3. Filter by Enrollment Status");
-            System.out.println("4. Back to Student Management Menu");
-            System.out.println("--------------------------------------------------------");
+        for (String student : students) {
+            String[] data = student.split("\\|");
 
-            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", 
-            "Invalid input! Please enter a valid option (1-4).", 1, 4);
+            String yearLevel = data[3].trim();
+            String status = data[5].trim();
 
-            switch (choice) {
-
-                case 1:
-                    String yearLevel = promptYearLevel();
-                    displayFilteredResults(students, "Year Level: " + yearLevel, 1, yearLevel);
+            switch (yearLevel) {
+                case "1st Year":
+                    yearCounts[0]++;
                     break;
-
-                case 2:
-                    String course = promptCourseFromExisting(students);
-                    displayFilteredResults(students, "Course/Program: " + course, 2, course);
+                case "2nd Year":
+                    yearCounts[1]++;
                     break;
-
-                case 3:
-                    String status = promptEnrollmentStatus();
-                    displayFilteredResults(students, "Enrollment Status: " + status, 3, status);
+                case "3rd Year":
+                    yearCounts[2]++;
                     break;
-
-                case 4:
-                    isFiltering = false;
-                    System.out.println("Returning to Student Management Menu...\n");
+                case "4th Year":
+                    yearCounts[3]++;
                     break;
             }
+
+            switch (status) {
+                case "Active":
+                    statusCounts[0]++;
+                    break;
+                case "Inactive":
+                    statusCounts[1]++;
+                    break;
+                case "Transferred":
+                    statusCounts[2]++;
+                    break;
+                case "Graduated":
+                    statusCounts[3]++;
+                    break;
+            }
+
+            totalStudents[0]++;
         }
-    }
 
-    public void displayNumberOfStudents(){
+        System.out.println("=======================================================");
+        System.out.println("                 STUDENT STATISTICS");
+        System.out.println("=======================================================");
 
+         System.out.println("-------------------------------------------------------");
+        System.out.println("Students by Year Level");
+        System.out.println("-------------------------------------------------------");
+
+        String[] yearLabels = {"1st Year", "2nd Year", "3rd Year", "4th Year"};
+
+        for (int i = 0; i < yearCounts.length; i++) {
+            System.out.println(yearLabels[i] + ": " + yearCounts[i]);
+        }
+
+        System.out.println("-------------------------------------------------------");
+        System.out.println("Students by Enrollment Status");
+        System.out.println("-------------------------------------------------------");
+
+        String[] statusLabels = {"Active", "Inactive", "Transferred", "Graduated"};
+
+        for (int i = 0; i < statusCounts.length; i++) {
+            System.out.println(statusLabels[i] + ": " + statusCounts[i]);
+        }
+
+        System.out.println("=======================================================");
+        System.out.println("TOTAL STUDENTS: " + totalStudents[0]);
+        System.out.println("=======================================================");
     }
 
     public void updateStudentRecord(){
-        System.out.println("=======================================================");
-        System.out.println("                Update Student Record                  ");
-        System.out.println("=======================================================");
 
-        List<Student> students = STUDENTFILEHANDLER.loadStudents();
 
-        if (students.isEmpty()){
-            System.out.println("No student records found.\n");
-            return;
-        }
-
-        String id = VALIDATOR.getValidatedStringInput("Enter Student ID to update: ", "Invalid input! Student ID cannot be empty.", "^\\s*\\S.*$").trim();
-        Student student = STUDENTFILEHANDLER.findStudentById(students, id);
-
-        if (student == null){
-            System.out.println("Student record not found.\n");
-            return;
-        }
-
-        boolean isUpdating = true;
-
-        while (isUpdating){
-            System.out.println("--------------------------------------------------------");
-            System.out.println("Current Record:");
-            printStudentDetails(student);
-            System.out.println("--------------------------------------------------------");
-            System.out.println("What would you like to update?");
-            System.out.println("1. Age");
-            System.out.println("2. Year Level");
-            System.out.println("3. Course/Program");
-            System.out.println("4. Enrollment Status");
-            System.out.println("5. Done");
-            System.out.println("--------------------------------------------------------");
-
-            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", 
-            "Invalid input! Please enter a valid option (1-5).", 1, 5);
-
-            switch (choice) {
-                case 1:
-                    int age = VALIDATOR.getValidatedIntegerMinMax("Enter new age (" + MIN_AGE + "-" + MAX_AGE + "): ",
-                            "Invalid input! Please enter a number between " + MIN_AGE + " and " + MAX_AGE + ".",
-                            MIN_AGE, MAX_AGE);
-                    student.setAge(age);
-                    STUDENTFILEHANDLER.saveStudents(students);
-                    System.out.println("Age updated successfully!");
-                    break;
-
-                case 2:
-                    student.setYearLevel(promptYearLevel());
-                    STUDENTFILEHANDLER.saveStudents(students);
-                    System.out.println("Year level updated successfully!");
-                    break;
-
-                case 3:
-                    String course = VALIDATOR.getValidatedStringInput("Enter new course/program: ", "Invalid input! Course/Program cannot be empty.", "^[^|]*\\S[^|]*$").trim();
-                    student.setCourse(course);
-                    STUDENTFILEHANDLER.saveStudents(students);
-                    System.out.println("Course/Program updated successfully!");
-                    break;
-
-                case 4:
-                    student.setStatus(promptEnrollmentStatus());
-                    STUDENTFILEHANDLER.saveStudents(students);
-                    System.out.println("Enrollment status updated successfully!");
-                    break;
-
-                case 5:
-                    isUpdating = false;
-                    break;
-            }
-        }
+    public int promptUpdateChoice(){
+        return VALIDATOR.getValidatedIntegerMinMax("Enter value to update (1-4): ", "Invalid input! Please enter a valid option (1-4).", 1, 4);
     }
 
-    public void deleteStudentRecord(){
-        System.out.println("=======================================================");
-        System.out.println("                Delete Student Record                  ");
-        System.out.println("=======================================================");
-
-        List<Student> students = STUDENTFILEHANDLER.loadStudents();
-
-        if (students.isEmpty()){
-            System.out.println("No student records found.\n");
-            return;
-        }
-
-        String id = VALIDATOR.getValidatedStringInput("Enter Student ID to delete: ", 
-        "Invalid input! Student ID cannot be empty.", "^\\s*\\S.*$").trim();
-        Student student = STUDENTFILEHANDLER.findStudentById(students, id);
-
-        if (student == null) {
-            System.out.println("Student not found.\n");
-            return;
-        }
-
-        System.out.println("--------------------------------------------------------");
-        System.out.println("Student ID : " + student.getId());
-        System.out.println("Name       : " + student.getName());
-        System.out.println("--------------------------------------------------------");
-
-        String confirm = VALIDATOR.getValidatedStringInput(
-            "Are you sure you want to delete this record? (Y/N): ",
-            "Invalid input! Please enter Y or N.",
-            "^[YyNn]$");
-
-        if (confirm.equalsIgnoreCase("Y")){
-            students.remove(student);
-            STUDENTFILEHANDLER.saveStudents(students);
-            System.out.println("Student record deleted successfully!\n");
-        } else {
-            System.out.println("Deletion cancelled.\n");
-        }
-
+    public String promptNewAge(){
+        int newAge = VALIDATOR.getValidatedIntegerMin("Enter Student Age: ", "Invalid input! Age must not be negative and cannot be empty.", 0);
+        return Integer.toString(newAge);
     }
 
-    
-
-    private String promptYearLevel(){
-        System.out.println("Year Level:");
-        for (int i = 0; i < YEAR_LEVELS.length; i++){
-            System.out.println((i + 1) + ". " + YEAR_LEVELS[i]);
-        }
-        int choice = VALIDATOR.getValidatedIntegerMinMax("Select year level (1-4): ", "Invalid input! Please enter a number between 1 and 4.", 1, 4);
-        return YEAR_LEVELS[choice - 1];
+    public int promptNewYearLevelChoice(){
+        return VALIDATOR.getValidatedIntegerMinMax("Enter year level option (1-4): ", "Invalid input! Please enter a valid option (1-4).", 1, 4);
     }
 
-    private String promptEnrollmentStatus(){
-        System.out.println("Enrollment Status:");
-        for (int i = 0; i < ENROLLMENT_STATUS.length; i++){
-            System.out.println((i + 1) + ". " + ENROLLMENT_STATUS[i]);
-        }
-        int choice = VALIDATOR.getValidatedIntegerMinMax("Select enrollment status (1-4): ", "Invalid input! Please enter a number between 1 and 4.", 1, 4);
-        return ENROLLMENT_STATUS[choice - 1];
+    public String promptNewCourse(){
+        return VALIDATOR.getValidatedStringInput("Enter New Course: ", "Invalid input! Course cannot be empty.", "^.+$");
     }
 
-    private String promptCourseFromExisting(List<Student> students){
-        List<String> courses = new ArrayList<>();
+    public int promptNewStatusChoice(){
+        return VALIDATOR.getValidatedIntegerMinMax("Enter enrollment status option (1-4): ", "Invalid input! Please enter a valid option (1-4).", 1, 4);
+    }
 
-        for (Student student : students){
-            boolean found = false;
-            for (String c : courses){
-                if (c.equalsIgnoreCase(student.getCourse())){
-                    found = true;
-                    break;
-                }
-            }
-            if (!found){
-                courses.add(student.getCourse());
+    public String promptConfirmation(){
+        return VALIDATOR.getValidatedStringInput("Are you sure you want to delete this student record? (Y/N): ","Invalid input! Please enter Y or N.","^[YyNn]$");
+    }
+
+    public int findStudentIndex(List<String> students, String studentID) {
+        for (int i = 0; i < students.size(); i++) {
+            String[] data = students.get(i).split("\\|", -1);
+
+            if (data[0].trim().equalsIgnoreCase(studentID)) {
+                return i;
             }
         }
 
-        System.out.println("Courses/Programs:");
-        for (int i = 0; i < courses.size(); i++){
-            System.out.println((i + 1) + ". " + courses.get(i));
-        }
-
-        int choice = VALIDATOR.getValidatedIntegerMinMax(
-            "Select course/program (1-" + courses.size() + "): ",
-            "Invalid input! Please enter a number between 1 and " + courses.size() + ".",
-            1, courses.size());
-        return courses.get(choice - 1);
+        return -1;
     }
-
-    private void displayFilteredResults(List<Student> students, String criteria, int field, String value){
-        List<Student> results = new ArrayList<>();
-
-        for (Student student : students){
-            String actual;
-            switch (field){
-                case 1:  actual = student.getYearLevel(); break;
-                case 2:  actual = student.getCourse();    break;
-                default: actual = student.getStatus();    break;
-            }
-            if (actual.equalsIgnoreCase(value)){
-                results.add(student);
-            }
-        }
-
-        System.out.println("\n=======================================================");
-        System.out.println("Filter Results - " + criteria);
-        System.out.println("=======================================================");
-
-        if (results.isEmpty()){
-            System.out.println("No student records match this filter.\n");
-            return;
-        }
-
-        String format = "%-12s %-22s %-5s %-10s %-26s %-12s%n";
-        System.out.printf(format, "ID", "Name", "Age", "Year", "Course/Program", "Status");
-        System.out.println("---------------------------------------------------------------------------------------");
-
-        for (Student student : results){
-            System.out.printf(format, student.getId(), student.getName(), student.getAge(),
-                student.getYearLevel(), student.getCourse(), student.getStatus());
-        }
-
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.println("Total records found: " + results.size() + "\n");
-    }
-
-    private void printStudentDetails(Student student){
-        System.out.println("Student ID : " + student.getId());
-        System.out.println("Name       : " + student.getName());
-        System.out.println("Age        : " + student.getAge());
-        System.out.println("Year Level : " + student.getYearLevel());
-        System.out.println("Course     : " + student.getCourse());
-        System.out.println("Status     : " + student.getStatus());
-    }
-
 }

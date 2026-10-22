@@ -1,4 +1,4 @@
-package objects;
+package models;
 
 public abstract class Account {
     private String userName;
