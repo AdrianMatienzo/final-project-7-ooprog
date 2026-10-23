@@ -478,7 +478,7 @@ public class StudentManagementSystemUI{
                 String newAge = promptNewAge();
 
                 if (data[StudentIndex.AGE.getIndex()].trim().equals(newAge)) {
-                    System.out.println("Student is already " + newAge + " years old!");
+                    System.out.println("Student is already " + newAge + " years old.");
                     return;
                 }
 
@@ -566,7 +566,7 @@ public class StudentManagementSystemUI{
                 }
 
                 if (data[StudentIndex.STATUS.getIndex()].trim().equalsIgnoreCase(newStatus)) {
-                    System.out.println("Student already has the enrollment status: " + newStatus + ".");
+                    System.out.println("Student already has the enrollment status: " + newStatus);
                     return;
                 }
 
@@ -632,10 +632,10 @@ public class StudentManagementSystemUI{
         boolean validId = false;
 
         while (!validId){
-            id = VALIDATOR.getValidatedStringInput("Enter Student ID (2 numbers followed by 4 letters e.g. 12ABCD): ", "Invalid input! Username cannot be empty.", "^\\d{2}[A-Za-z]{4}$");
+            id = VALIDATOR.getValidatedStringInput("Enter Student ID (2 numbers followed by 4 letters e.g. 12ABCD): ", "Invalid input! ID cannot be empty and must follow the indicated format.", "^\\d{2}[A-Za-z]{4}$");
 
             if (STUDENTFILEHANDLER.studentIdExists(id)){
-                System.out.println("Duplicate Username! Please enter a new username.");
+                System.out.println("Duplicate ID! Please enter a new ID.");
             }
             else{
                 validId = true;
