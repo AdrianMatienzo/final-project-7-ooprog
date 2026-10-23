@@ -5,7 +5,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import java.util.*;
+import java.util.List;
 
 import models.Student;
 import models.StudentIndex;
@@ -29,8 +29,7 @@ public class StudentFileHandler{
             File file = STUDENTS_FILE.toFile();
             file.createNewFile();
         } catch (IOException e) {
-            System.out.println("Error creating students file: "
-                    + e.getMessage());
+            System.out.println("Error creating students file: " + e.getMessage());
         }
     }
 
@@ -51,9 +50,7 @@ public class StudentFileHandler{
         while ((line = reader.readLine()) != null) {
             String[] studentData = line.split("\\|", -1);
 
-            if (studentData.length > 0 &&
-                    studentData[StudentIndex.ID.getIndex()].trim()
-                            .equalsIgnoreCase(studentID)) {
+            if (studentData.length > 0 &&studentData[StudentIndex.ID.getIndex()].trim().equalsIgnoreCase(studentID)) {
                 return true;
             }
         }
@@ -67,8 +64,7 @@ public class StudentFileHandler{
     }
 
     public void saveUpdatedStudents(List<String> students) {
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(STUDENTS_FILE.toFile(), false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STUDENTS_FILE.toFile(), false))) {
 
             for (String student : students) {
                 writer.write(student);
@@ -76,14 +72,12 @@ public class StudentFileHandler{
             }
 
         } catch (IOException e) {
-            System.out.println("Error updating student record: "
-                    + e.getMessage());
+            System.out.println("Error updating student record: " + e.getMessage());
         }
     }
 
     public void createStudentList(List<String> students){
-        try (BufferedReader reader =
-            new BufferedReader(new FileReader(STUDENTS_FILE.toFile()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENTS_FILE.toFile()))) {
 
         String line;
 
@@ -92,8 +86,7 @@ public class StudentFileHandler{
         }
 
         } catch (IOException e) {
-            System.out.println("Error reading student records: "
-                    + e.getMessage());
+            System.out.println("Error reading student records: " + e.getMessage());
             return;
         }
 

@@ -19,7 +19,7 @@ public class AdminUI implements RoleMenu{
             System.out.println("3. Log Out");
 
             System.out.println("--------------------------------------------------------");
-            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-3).", 1, 3);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice (1-3): ", "Invalid input! Please enter a valid option (1-3).", 1, 3);
             switch (choice){
                 case 1:
                     studentManagementSystemMenu();
@@ -62,7 +62,7 @@ public class AdminUI implements RoleMenu{
             System.out.println("9. Back to Admin Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice (1-9): ", "Invalid input! Please enter a valid option (1-9).", 1, 9);
             switch (choice){
                 case 1:
                     StudentManagementUI.addStudentRecord();
@@ -123,7 +123,7 @@ public class AdminUI implements RoleMenu{
             System.out.println("6. Back to Admin Menu");
 
             System.out.println("--------------------------------------------------------");
-            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice: ", "Invalid input! Please enter a valid option (1-6).", 1, 6);
+            int choice = VALIDATOR.getValidatedIntegerMinMax("Enter your choice (1-6): ", "Invalid input! Please enter a valid option (1-6).", 1, 6);
             switch (choice){
                 case 1:
                     AccountManagementUI.addUserAccount();
